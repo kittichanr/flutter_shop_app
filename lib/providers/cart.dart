@@ -15,15 +15,19 @@ class CartItem {
 }
 
 class Cart with ChangeNotifier {
-  Map<String, CartItem> _items;
+  Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items {
     return {...items};
   }
 
+  int get itemCount {
+    return _items.length;
+  }
+
   void addItems(String productId, double price, String title) {
     if (_items.containsKey(productId)) {
-      items.update(
+      _items.update(
           productId,
           (existingCartItem) => CartItem(
               id: existingCartItem.id,
@@ -31,7 +35,7 @@ class Cart with ChangeNotifier {
               title: existingCartItem.title,
               quantity: existingCartItem.quantity + 1));
     } else {
-      items.putIfAbsent(
+      _items.putIfAbsent(
           productId,
           () => CartItem(
               id: DateTime.now().toString(),
@@ -39,5 +43,6 @@ class Cart with ChangeNotifier {
               price: price,
               quantity: 1));
     }
+    notifyListeners();
   }
 }
