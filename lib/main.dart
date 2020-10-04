@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/screens/cart_screen.dart';
 
 import './screens/product_overview_screen.dart';
 import './screens/product_detail_screen.dart';
+import './screens/cart_screen.dart';
 
 import './providers/products.dart';
 import './providers/cart.dart';
@@ -26,11 +28,21 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         home: ProductOverviewScreen(),
         theme: ThemeData(
-            primarySwatch: Colors.purple,
-            accentColor: Colors.orange,
-            fontFamily: 'Lato'),
+          primarySwatch: Colors.purple,
+          accentColor: Colors.orange,
+          fontFamily: 'Lato',
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Lato',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+                button: TextStyle(color: Colors.white),
+              ),
+        ),
         routes: {
-          ProductDetailScreen.routeName: (context) => ProductDetailScreen()
+          ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
+          CartScreen.routeName: (context) => CartScreen()
         },
       ),
     );
