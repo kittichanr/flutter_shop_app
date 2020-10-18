@@ -19,3 +19,16 @@ I learn about statement on flutter.
   * Consumer
   * notifyListeners
 + mixin (with) vs Inheritance (extend)
+
+## InputForm
+
++ interest widget
+  * Dismissible -> slide to dismiss item
+  * Form -> manage all form inside this widget
+  * TextFormField -> provide about form
+    * FocusNode
+    * TextEditingController
+    * GlobalKey
+    * FocusScope
+ + didChangeDependecies***
+ + create, update, delete
