@@ -23,6 +23,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     description: '',
     imageUrl: '',
   );
+  var _isInit = true;
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': ''
+  };
 
   @override
   void initState() {
@@ -40,6 +47,27 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final productId = ModalRoute.of(context).settings.arguments as String;
+      if (productId != null) {
+        _edittedProduct =
+            Provider.of<Products>(context, listen: false).findById(productId);
+      }
+      _initValues = {
+        'title': _edittedProduct.title,
+        'description': _edittedProduct.description,
+        'price': _edittedProduct.price.toString(),
+        // 'imageUrl': _edittedProduct.imageUrl
+        'imageUrl': ''
+      };
+      _imageUrlController.text = _edittedProduct.imageUrl;
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   void _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus) {
       setState(() {});
@@ -52,7 +80,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState.save();
-    Provider.of<Products>(context, listen: false).addProduct(_edittedProduct);
+    if (_edittedProduct.id != null) {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_edittedProduct.id, _edittedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).addProduct(_edittedProduct);
+    }
     Navigator.of(context).pop();
   }
 
@@ -72,6 +105,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             child: ListView(
               children: [
                 TextFormField(
+                  initialValue: _initValues['title'],
                   decoration: InputDecoration(labelText: 'Title'),
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
@@ -85,15 +119,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   },
                   onSaved: (value) {
                     _edittedProduct = Product(
-                      id: null,
-                      title: value,
-                      price: _edittedProduct.price,
-                      description: _edittedProduct.description,
-                      imageUrl: _edittedProduct.imageUrl,
-                    );
+                        title: value,
+                        price: _edittedProduct.price,
+                        description: _edittedProduct.description,
+                        imageUrl: _edittedProduct.imageUrl,
+                        id: _edittedProduct.id,
+                        isFavorite: _edittedProduct.isFavorite);
                   },
                 ),
                 TextFormField(
+                  initialValue: _initValues['price'],
                   decoration: InputDecoration(labelText: 'Price'),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.number,
@@ -115,15 +150,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   },
                   onSaved: (value) {
                     _edittedProduct = Product(
-                      id: null,
-                      title: _edittedProduct.title,
-                      price: double.parse(value),
-                      description: _edittedProduct.description,
-                      imageUrl: _edittedProduct.imageUrl,
-                    );
+                        title: _edittedProduct.title,
+                        price: double.parse(value),
+                        description: _edittedProduct.description,
+                        imageUrl: _edittedProduct.imageUrl,
+                        id: _edittedProduct.id,
+                        isFavorite: _edittedProduct.isFavorite);
                   },
                 ),
                 TextFormField(
+                  initialValue: _initValues['description'],
                   decoration: InputDecoration(labelText: 'Description'),
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
@@ -140,12 +176,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   },
                   onSaved: (value) {
                     _edittedProduct = Product(
-                      id: null,
-                      title: _edittedProduct.title,
-                      price: _edittedProduct.price,
-                      description: value,
-                      imageUrl: _edittedProduct.imageUrl,
-                    );
+                        title: _edittedProduct.title,
+                        price: _edittedProduct.price,
+                        description: value,
+                        imageUrl: _edittedProduct.imageUrl,
+                        id: _edittedProduct.id,
+                        isFavorite: _edittedProduct.isFavorite);
                   },
                 ),
                 Row(
@@ -188,12 +224,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         },
                         onSaved: (value) {
                           _edittedProduct = Product(
-                            id: null,
-                            title: _edittedProduct.title,
-                            price: _edittedProduct.price,
-                            description: _edittedProduct.description,
-                            imageUrl: value,
-                          );
+                              title: _edittedProduct.title,
+                              price: _edittedProduct.price,
+                              description: _edittedProduct.description,
+                              imageUrl: value,
+                              id: _edittedProduct.id,
+                              isFavorite: _edittedProduct.isFavorite);
                         },
                         onFieldSubmitted: (_) => _saveForm(),
                       ),
